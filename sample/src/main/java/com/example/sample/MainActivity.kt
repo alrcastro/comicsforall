@@ -1,6 +1,5 @@
 package com.example.sample
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +12,7 @@ import com.example.comicsforall.model.RectFrame
 import com.example.comicsforall.util.setAccessibilityList
 import com.example.sample.databinding.ActivityMainBinding
 
+// TODO ViewModel, Repository
 class MainActivity : AppCompatActivity(), TextDialogListener, AccessibilityCanvasItemListener {
 
     private lateinit var binding: ActivityMainBinding
