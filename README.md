@@ -4,7 +4,8 @@ Simple colaborative lib/sample showing how to translate and use a comic book app
 This project is in a really early state and I´ll be trying to update it as soon as possible. The lib has a extension method that add a list of itens and override the default behavior of the Talkback, having now multiple itens (texts and position on screen) on the same UI object. We have a UI component to facilitate the creation of this lists, basically creating Boxes on top of it and the user right what it suppose to be there, just like that:
 
 Simply use of the AccessibilityCanvas:
-https://user-images.githubusercontent.com/1109990/161449554-e6c3acd1-b493-436d-87ef-f4b9e645e10a.mp4
+![screenmanga1](https://user-images.githubusercontent.com/1109990/161449974-4ba77e0c-ffb2-47b3-8a5f-af0ffb0794d2.png)
+
 
 After that you can generate a simple json with that:
 Example of a json:
