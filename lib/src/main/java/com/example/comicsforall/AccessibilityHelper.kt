@@ -6,6 +6,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.customview.widget.ExploreByTouchHelper
 import com.example.comicsforall.model.AccessibilityItem
 
+// TODO Fix Bound to different sizes
 class AccessibilityHelper(
     view: View,
     private val list: List<AccessibilityItem>

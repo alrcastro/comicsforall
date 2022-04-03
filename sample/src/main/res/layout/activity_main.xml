@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/imgManga"
-        android:src="@drawable/manga1"
+        android:src="@drawable/manga3"
         app:layout_constraintBottom_toTopOf="@id/toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

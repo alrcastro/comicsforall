@@ -10,6 +10,7 @@ import com.example.comicsforall.model.AccessibilityCanvasItem
 import com.example.comicsforall.model.AccessibilityItem
 import com.example.comicsforall.model.RectFrame
 
+// TODO ViewModel with state,
 open class AccessibilityCanvas(context: Context, attr: AttributeSet?) :
     View(context, attr), ExtendedAccessibility {
 
