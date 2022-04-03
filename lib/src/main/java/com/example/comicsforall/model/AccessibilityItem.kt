@@ -1,9 +1,12 @@
 package com.example.comicsforall.model
 
-import android.graphics.Rect
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AccessibilityItem(
-    val text: String? = null,
-    val rect: Rect,
-    val position: Int? = null
+    @SerialName("text")
+    val text: String,
+    @SerialName("frame")
+    val frame: RectFrame
 )

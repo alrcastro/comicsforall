@@ -6,39 +6,46 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.ViewCompat
+import com.example.comicsforall.model.AccessibilityCanvasItem
 import com.example.comicsforall.model.AccessibilityItem
+import com.example.comicsforall.model.RectFrame
 
 open class AccessibilityCanvas(context: Context, attr: AttributeSet?) :
     View(context, attr), ExtendedAccessibility {
 
     private var firstPoint: Point? = null
-    private var rect: Rect? = null
-    private var isDrawing = false
-    private var listener: AccessibilityItemListener? = null
-    private var currentItem: AccessibilityItem? = null
-    private var accessibilityListItems = mutableListOf<AccessibilityItem>()
+    private var frame: RectFrame? = null
+    private var _isDrawing = false
+    private var listener: AccessibilityCanvasItemListener? = null
+    private var currentItem: AccessibilityCanvasItem? = null
+    private var accessibilityListItems = mutableListOf<AccessibilityCanvasItem>()
+
+    val isDrawing get() = _isDrawing
 
     override fun setAccessibilityContentList(list: List<AccessibilityItem>) {
-        accessibilityListItems = list.toMutableList()
+        accessibilityListItems =
+            list.mapIndexed { index: Int, item: AccessibilityItem ->
+                AccessibilityCanvasItem(text = item.text, rect = item.frame, position = index + 1)
+            }.toMutableList()
         ViewCompat.setAccessibilityDelegate(this, AccessibilityHelper(this, list))
     }
 
-    fun openDrawCanvas(listener: AccessibilityItemListener) {
+    fun openDrawCanvas(listener: AccessibilityCanvasItemListener) {
         this.listener = listener
-        isDrawing = true
+        _isDrawing = true
         setOnTouchListener { view, event ->
             view.performClick()
             draw(event)
         }
     }
 
-    fun sendEvent(event: AccessibilityEvent) {
+    fun sendEvent(event: AccessibilityCanvasEvent) {
         when (event) {
-            is AddAccessibilityItem -> {
+            is AddAccessibilityCanvasItem -> {
                 accessibilityListItems.add(event.item)
                 currentItem?.let { accessibilityListItems.remove(it) }
             }
-            is DeleteAccessibilityItem -> {
+            is DeleteAccessibilityCanvasItem -> {
                 accessibilityListItems.remove(event.item)
             }
         }
@@ -47,24 +54,27 @@ open class AccessibilityCanvas(context: Context, attr: AttributeSet?) :
 
     fun finishDrawing(): List<AccessibilityItem> {
         setOnTouchListener(null)
-        isDrawing = false
+        _isDrawing = false
         return accessibilityListItems
+            .filter { !it.text.isNullOrEmpty() }
+            .sortedBy { it.position }
+            .map { AccessibilityItem(it.text ?: "", it.rect) }
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        if (!isDrawing) return
+        if (!_isDrawing) return
 
         accessibilityListItems.forEach {
             canvas?.run {
-                drawRect(it.rect, if(it.text.isNullOrEmpty()) colorEmpty else colorSelected)
+                drawRect(it.rect.toRect(), if (it.text.isNullOrEmpty()) colorEmpty else colorSelected)
             }
         }
 
-        rect?.let {
+        frame?.let {
             canvas?.run {
-                drawRect(it, colorEmpty)
+                drawRect(it.toRect(), colorEmpty)
             }
         }
     }
@@ -72,7 +82,12 @@ open class AccessibilityCanvas(context: Context, attr: AttributeSet?) :
     private fun draw(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                val item = accessibilityListItems.firstOrNull { it.rect.contains(event.x.toInt(), event.y.toInt()) }
+                val item = accessibilityListItems.firstOrNull {
+                    it.rect.toRect().contains(
+                        event.x.toInt(),
+                        event.y.toInt()
+                    )
+                }
 
                 currentItem = item
 
@@ -83,19 +98,19 @@ open class AccessibilityCanvas(context: Context, attr: AttributeSet?) :
                 firstPoint = Point(event.x.toInt(), event.y.toInt())
             }
             MotionEvent.ACTION_MOVE -> {
-                rect = Rect(firstPoint!!.x, firstPoint!!.y, event.x.toInt(), event.y.toInt())
+                frame = RectFrame(firstPoint!!.x, firstPoint!!.y, event.x.toInt(), event.y.toInt())
             }
             MotionEvent.ACTION_UP -> {
-                rect?.let {
+                frame?.toRect()?.let {
                     if (it.width() > MIN_SIZE && it.height() > MIN_SIZE)
                         accessibilityListItems.add(
-                            AccessibilityItem(
-                                rect = it,
+                            AccessibilityCanvasItem(
+                                rect = frame!!,
                                 position = accessibilityListItems.size + 1
                             )
                         )
                 }
-                rect = null
+                frame = null
             }
         }
         invalidate()

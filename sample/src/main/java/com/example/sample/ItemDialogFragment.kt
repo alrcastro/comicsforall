@@ -2,17 +2,20 @@ package com.example.sample
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.example.comicsforall.AddAccessibilityItem
-import com.example.comicsforall.DeleteAccessibilityItem
+import com.example.comicsforall.AddAccessibilityCanvasItem
+import com.example.comicsforall.DeleteAccessibilityCanvasItem
+import com.example.comicsforall.model.AccessibilityCanvasItem
 import com.example.comicsforall.model.AccessibilityItem
 import com.example.sample.databinding.ItemDialogBinding
 
 class ItemDialogFragment(
-    private val item: AccessibilityItem
+    private val item: AccessibilityCanvasItem
 ) : DialogFragment() {
 
     private lateinit var binding: ItemDialogBinding
@@ -25,6 +28,16 @@ class ItemDialogFragment(
             root
         }
 
+        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+                binding.root.setPadding(0, 0, 0, imeHeight)
+            } else {
+                dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            }
+            windowInsets
+        }
+
         binding.apply {
             txtDescription.setText(item.text)
             txtNumber.setText(item.position?.toString())
@@ -35,8 +48,8 @@ class ItemDialogFragment(
             .setTitle(getString(R.string.title_text_description))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 listener.onSendEvent(
-                    AddAccessibilityItem(
-                        AccessibilityItem(
+                    AddAccessibilityCanvasItem(
+                        AccessibilityCanvasItem(
                             text = binding.txtDescription.text.toString(),
                             rect = item.rect,
                             position = binding.txtNumber.text.toString().toInt()
@@ -48,7 +61,7 @@ class ItemDialogFragment(
                 dismiss()
             }
             .setNeutralButton(getString(R.string.delete)) { _, _ ->
-                listener.onSendEvent(DeleteAccessibilityItem(item))
+                listener.onSendEvent(DeleteAccessibilityCanvasItem(item))
             }
             .create()
     }

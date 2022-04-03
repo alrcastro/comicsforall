@@ -8,6 +8,7 @@
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/txtDescription"
         android:hint="@string/text_description"
+        android:lines="4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

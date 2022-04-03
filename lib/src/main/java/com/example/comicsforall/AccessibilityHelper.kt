@@ -8,15 +8,12 @@ import com.example.comicsforall.model.AccessibilityItem
 
 class AccessibilityHelper(
     view: View,
-    list: List<AccessibilityItem>
+    private val list: List<AccessibilityItem>
 ) : ExploreByTouchHelper(view) {
 
-    private val filteredList: List<AccessibilityItem> =
-        list.filter { !it.text.isNullOrEmpty() }.sortedBy { it.position }
-
     override fun getVirtualViewAt(x: Float, y: Float): Int {
-        filteredList.forEachIndexed { index, item ->
-            if (item.rect.contains(x.toInt(), y.toInt())) {
+        list.forEachIndexed { index, item ->
+            if (item.frame.toRect().contains(x.toInt(), y.toInt())) {
                 return index
             }
         }
@@ -24,7 +21,7 @@ class AccessibilityHelper(
     }
 
     override fun getVisibleVirtualViews(virtualViewIds: MutableList<Int>?) {
-        virtualViewIds?.addAll(0 until filteredList.count())
+        virtualViewIds?.addAll(0 until list.count())
     }
 
     @Suppress("DEPRECATION")
@@ -32,10 +29,10 @@ class AccessibilityHelper(
         virtualViewId: Int,
         node: AccessibilityNodeInfoCompat
     ) {
-        val item = filteredList[virtualViewId]
+        val item = list[virtualViewId]
         node.className = AccessibilityCanvas::class.simpleName
         node.contentDescription = item.text
-        node.setBoundsInParent(item.rect)
+        node.setBoundsInParent(item.frame.toRect())
     }
 
     override fun onPerformActionForVirtualView(
