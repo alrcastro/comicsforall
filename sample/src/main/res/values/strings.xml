@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Accessibility List Sample</string>
+    <string name="text_description">Comic description</string>
+    <string name="text_position">Position</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="title_text_description">Write the description</string>
+</resources>
