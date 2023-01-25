@@ -18,3 +18,7 @@ binding.imgManga.setAccessibilityList(list)
 ```
 
 This is a personal project that is in really early state, the structure and architecture is not ready yet. 
+
+
+https://user-images.githubusercontent.com/1109990/214651850-85d163d9-ac00-462b-9af1-11ebecd79904.mov
+
